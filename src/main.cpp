@@ -92,7 +92,7 @@ int main(int argc, char **argv)
 
             std::ofstream outfile;
             outfile.open("study_output.txt", std::ios_base::app);//std::ios_base::app
-            outfile << pid.Kp << "\t" << pid.Ki << "\t" << pid.Kd << "\t" << pid.avg_cte << std::endl;
+            outfile << pid.Kp << "\t" << pid.Ki << "\t" << pid.Kd << "\t" << pid.avg_cte/pid.timestep << std::endl;
 
             // reset the simulator
             std::string reset_msg = "42[\"reset\", {}]";
@@ -141,13 +141,10 @@ int main(int argc, char **argv)
   h.onDisconnection([](uWS::WebSocket<uWS::SERVER> ws, int code, char *message, size_t length) {
     switch (code) {
       case 2000:
-        // The car crashed; let the caller know.
         exit(1);
       case 2001:
-        // The simulator ran until our deadline; that's a success.
         exit(EX_OK);
       default:
-        // If the simulator exits, we seem to get code 1006 or 0.
         std::cerr << "Disconnected: code=" << code << ":" <<
           std::string(message, length) << std::endl;
         exit(EX_UNAVAILABLE);

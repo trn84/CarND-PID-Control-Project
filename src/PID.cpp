@@ -1,14 +1,10 @@
 #include "PID.h"
 #include <iostream>
+#include <math.h>       /* fabs */
 
 //using namespace std;
 
-/*
-* TODO: Complete the PID class.
-*/
-
-// If car has absolute CTE larger than this, in meters, assume it has crashed.
-const double MAX_CTE = 5.0;
+const double MAX_CTE = 4.5;
 
 
 PID::PID() {}
@@ -43,15 +39,16 @@ void PID::UpdateError(double cte) {
     this->pre_p_error = this->p_error;
 
     this->timestep++;
-    this->avg_cte += cte*cte / this->timestep;
+    this->avg_cte += cte*cte;
 
     //std::cout << "P: " << this->p_error << " I: " << this->i_error << " D: " << this->d_error << std::endl;
-    std::cout << "Timestep: " << this->timestep << " avg_cte: " << this->avg_cte << std::endl;
+    //std::cout << "Timestep: " << this->timestep << " avg_cte: " << this->avg_cte << std::endl;
 
     // Car in deadlock?
     if(this->study) {
-        if( abs(cte) > MAX_CTE ) {
+        if( fabs(cte) > MAX_CTE && this->timestep > 20 ) {
             this->dead = true;
+            std::cout << "Timestep: " << this->timestep << " Car dead: " << std::endl;
         }
     }
 
